@@ -1,9 +1,7 @@
+import Home from "./pages/Home";
+
 function App() {
-  return (
-    <div>
-      <h1>Student Notes Sharing Portal</h1>
-    </div>
-  );
+  return <Home />;
 }
 
 export default App;
