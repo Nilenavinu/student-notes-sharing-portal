@@ -1,0 +1,249 @@
+.my-notes-page {
+  max-width: 1200px;
+  margin: auto;
+  padding: 40px 60px;
+}
+
+/* Header */
+
+.my-notes-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 35px;
+}
+
+.my-notes-header h1 {
+  font-size: 32px;
+  margin-bottom: 8px;
+}
+
+.my-notes-header p {
+  color: #666;
+}
+
+.my-upload-btn {
+  background: #8B5E3C;
+  color: white;
+  padding: 12px 20px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.my-upload-btn:hover {
+  background: #6F452C;
+}
+
+/* Count */
+
+.my-notes-count {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.my-notes-count h2 {
+  font-size: 22px;
+}
+
+.my-notes-count span {
+  color: #777;
+}
+
+/* Notes List */
+
+.my-notes-list {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+/* Note Card */
+
+.my-note-card {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 22px;
+  border: 1px solid #e5e7eb;
+  border-radius: 12px;
+  background: white;
+  transition: 0.2s;
+}
+
+.my-note-card:hover {
+  border-color: #8B5E3C;
+  box-shadow: 0 5px 18px rgba(0, 0, 0, 0.06);
+}
+
+.my-note-icon {
+  font-size: 35px;
+}
+
+/* Information */
+
+.my-note-info {
+  flex: 1;
+}
+
+.my-note-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 8px;
+}
+
+.my-note-title h3 {
+  margin: 0;
+  font-size: 18px;
+}
+
+.my-subject-tag {
+  background: #f3ebe5;
+  color: #8B5E3C;
+  padding: 5px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.my-note-info p {
+  color: #666;
+  font-size: 14px;
+  margin-bottom: 8px;
+}
+
+.my-note-info small {
+  color: #888;
+  font-size: 12px;
+}
+
+/* Actions */
+
+.my-note-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.my-note-actions button {
+  padding: 8px 13px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  background: white;
+}
+
+/* View */
+
+.my-view-btn {
+  border: 1px solid #8B5E3C;
+  color: #8B5E3C;
+}
+
+.my-view-btn:hover {
+  background: #8B5E3C;
+  color: white;
+}
+
+/* Edit */
+
+.my-edit-btn {
+  border: 1px solid #777;
+  color: #555;
+}
+
+.my-edit-btn:hover {
+  background: #f3f3f3;
+}
+
+/* Delete */
+
+.my-delete-btn {
+  border: 1px solid #c0392b;
+  color: #c0392b;
+}
+
+.my-delete-btn:hover {
+  background: #c0392b;
+  color: white;
+}
+
+/* Empty State */
+
+.empty-notes {
+  text-align: center;
+  padding: 70px 20px;
+  border: 1px dashed #d8d0ca;
+  border-radius: 12px;
+  background: #fdfaf8;
+}
+
+.empty-icon {
+  font-size: 50px;
+  margin-bottom: 15px;
+}
+
+.empty-notes h3 {
+  margin-bottom: 8px;
+}
+
+.empty-notes p {
+  color: #777;
+  margin-bottom: 25px;
+}
+
+.empty-upload-btn {
+  display: inline-block;
+  background: #8B5E3C;
+  color: white;
+  padding: 11px 20px;
+  border-radius: 7px;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.empty-upload-btn:hover {
+  background: #6F452C;
+}
+
+/* Mobile */
+
+@media (max-width: 800px) {
+  .my-notes-page {
+    padding: 30px 25px;
+  }
+
+  .my-notes-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+  }
+
+  .my-note-card {
+    align-items: flex-start;
+    flex-wrap: wrap;
+  }
+
+  .my-note-actions {
+    width: 100%;
+    margin-left: 53px;
+  }
+}
+
+@media (max-width: 500px) {
+  .my-notes-page {
+    padding: 25px 20px;
+  }
+
+  .my-note-title {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .my-note-actions {
+    margin-left: 0;
+  }
+}
+

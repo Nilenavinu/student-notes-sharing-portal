@@ -1,31 +1,20 @@
-import "./../styles/navbar.css";
+import { Link } from "react-router-dom";
+import "../styles/navbar.css";
 
 function Navbar() {
   return (
-    <nav className="navbar-custom">
-
+    <nav className="navbar">
       <div className="logo">
-        📖 NotesPortal
+        📚 Note Vault
       </div>
 
-      <ul className="nav-links">
-        <li>Home</li>
-        <li>About</li>
-        <li>Features</li>
-      </ul>
-
-      <div className="buttons">
-
-        <button className="login-btn">
-          Login
-        </button>
-
-        <button className="signup-btn">
+      <div className="nav-links">
+        <Link to="/">Home</Link>
+        <Link to="/login">Login</Link>
+        <Link to="/signup" className="signup-btn">
           Sign Up
-        </button>
-
+        </Link>
       </div>
-
     </nav>
   );
 }

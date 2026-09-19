@@ -1,0 +1,147 @@
+.auth-page {
+  min-height: 100vh;
+  background: #f7f2eb;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 20px;
+}
+
+.auth-container {
+  width: 100%;
+  max-width: 480px;
+}
+
+.auth-brand {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.auth-brand h1 {
+  color: #6f4e37;
+  font-size: 2rem;
+  margin-bottom: 8px;
+}
+
+.auth-brand p {
+  color: #74685f;
+  font-size: 0.95rem;
+}
+
+.auth-card {
+  background: white;
+  padding: 40px;
+  border-radius: 16px;
+  box-shadow: 0 15px 40px rgba(74, 51, 38, 0.12);
+}
+
+.auth-card h2 {
+  color: #4a3326;
+  font-size: 2rem;
+  margin-bottom: 8px;
+}
+
+.auth-subtitle {
+  color: #74685f;
+  line-height: 1.5;
+  margin-bottom: 30px;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-group label {
+  display: block;
+  color: #4a3326;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.form-group input {
+  width: 100%;
+  padding: 13px 15px;
+  border: 1px solid #d8cabc;
+  border-radius: 8px;
+  outline: none;
+  font-size: 1rem;
+  background: #fffdf9;
+}
+
+.form-group input:focus {
+  border-color: #8b6245;
+  box-shadow: 0 0 0 3px rgba(139, 98, 69, 0.1);
+}
+
+.forgot-password {
+  text-align: right;
+  margin-bottom: 25px;
+}
+
+.forgot-password a {
+  color: #8b6245;
+  font-size: 0.9rem;
+}
+
+.auth-button {
+  width: 100%;
+  padding: 14px;
+  background: #6f4e37;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  font-weight: 600;
+  transition: background 0.2s;
+}
+
+.auth-button:hover {
+  background: #543a29;
+}
+
+.auth-divider {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin: 25px 0;
+  color: #a09288;
+  font-size: 0.8rem;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+  content: "";
+  flex: 1;
+  height: 1px;
+  background: #e3d9cf;
+}
+
+.auth-switch {
+  text-align: center;
+  color: #74685f;
+}
+
+.auth-switch a {
+  color: #6f4e37;
+  font-weight: 700;
+}
+
+.back-home {
+  display: block;
+  text-align: center;
+  margin-top: 25px;
+  color: #8b6245;
+  font-size: 0.9rem;
+}
+
+/* MOBILE */
+
+@media (max-width: 500px) {
+  .auth-card {
+    padding: 30px 22px;
+  }
+
+  .auth-brand h1 {
+    font-size: 1.7rem;
+  }
+}

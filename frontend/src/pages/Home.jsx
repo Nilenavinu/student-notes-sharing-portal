@@ -1,11 +1,18 @@
-import Navbar from "../components/Navbar";
-import HeroBook from "../components/HeroBook";
+import Navbar from "../components/navbar";
+import Hero from "../components/Hero";
+import Features from "../components/Features";
+import Footer from "../components/Footer";
 
 function Home() {
   return (
     <>
       <Navbar />
-      <HeroBook />
+
+      <Hero />
+
+      <Features />
+
+      <Footer />
     </>
   );
 }
