@@ -1,7 +1,63 @@
-import { Link } from "react-router-dom";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import "../styles/auth.css";
 
 function Login() {
+  const navigate = useNavigate();
+
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.id]: e.target.value,
+    });
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    setError("");
+    setLoading(true);
+
+    try {
+      const response = await fetch(
+        "http://localhost:5000/api/auth/login",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        }
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        setError(data.message || "Login failed");
+        return;
+      }
+
+      // Save login information
+      localStorage.setItem("token", data.token);
+      localStorage.setItem("user", JSON.stringify(data.user));
+
+      // Go to dashboard
+      navigate("/dashboard");
+    } catch {
+      setError("Unable to connect to the server");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="auth-page">
       <div className="auth-container">
@@ -20,7 +76,8 @@ function Login() {
             Login to access your notes and study materials.
           </p>
 
-          <form>
+          <form onSubmit={handleSubmit}>
+
             <div className="form-group">
               <label htmlFor="email">Email Address</label>
 
@@ -28,6 +85,8 @@ function Login() {
                 type="email"
                 id="email"
                 placeholder="Enter your email"
+                value={formData.email}
+                onChange={handleChange}
                 required
               />
             </div>
@@ -39,6 +98,8 @@ function Login() {
                 type="password"
                 id="password"
                 placeholder="Enter your password"
+                value={formData.password}
+                onChange={handleChange}
                 required
               />
             </div>
@@ -47,9 +108,20 @@ function Login() {
               <a href="#">Forgot Password?</a>
             </div>
 
-            <button type="submit" className="auth-button">
-              Login
+            {error && (
+              <p className="auth-error">
+                {error}
+              </p>
+            )}
+
+            <button
+              type="submit"
+              className="auth-button"
+              disabled={loading}
+            >
+              {loading ? "Logging in..." : "Login"}
             </button>
+
           </form>
 
           <div className="auth-divider">

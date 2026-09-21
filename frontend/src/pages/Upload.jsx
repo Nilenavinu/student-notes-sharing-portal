@@ -1,12 +1,19 @@
-import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import API from "../api";
 import "../styles/upload.css";
 
 function Upload() {
+  const navigate = useNavigate();
+
   const [title, setTitle] = useState("");
   const [subject, setSubject] = useState("");
+  const [semester, setSemester] = useState("");
   const [description, setDescription] = useState("");
   const [file, setFile] = useState(null);
+
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const subjects = [
     "Data Structures",
@@ -17,22 +24,51 @@ function Upload() {
     "Web Development",
   ];
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const semesters = [1, 2, 3, 4, 5, 6, 7, 8];
 
-    if (!title || !subject || !description || !file) {
-      alert("Please fill in all fields and select a file.");
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setError("");
+
+    if (!title || !subject || !semester || !description || !file) {
+      setError("Please fill in all fields and select a file.");
       return;
     }
 
-    alert("Notes uploaded successfully!");
+    try {
+      setLoading(true);
 
-    setTitle("");
-    setSubject("");
-    setDescription("");
-    setFile(null);
+      const formData = new FormData();
 
-    document.getElementById("file-input").value = "";
+      formData.append("title", title);
+      formData.append("subject", subject);
+      formData.append("semester", semester);
+      formData.append("description", description);
+      formData.append("file", file);
+
+      await API.post("/notes/upload", formData);
+
+      alert("Notes uploaded successfully!");
+
+      setTitle("");
+      setSubject("");
+      setSemester("");
+      setDescription("");
+      setFile(null);
+
+      document.getElementById("file-input").value = "";
+
+      navigate("/notes");
+    } catch (error) {
+      console.error("Error uploading notes:", error);
+
+      setError(
+        error.response?.data?.message ||
+          "Failed to upload notes. Please try again."
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -56,6 +92,12 @@ function Upload() {
       <div className="upload-container">
 
         <form onSubmit={handleSubmit}>
+
+          {error && (
+            <div className="upload-error">
+              {error}
+            </div>
+          )}
 
           {/* Title */}
 
@@ -95,6 +137,28 @@ function Upload() {
             </select>
           </div>
 
+          {/* Semester */}
+
+          <div className="form-group">
+            <label htmlFor="semester">
+              Semester <span>*</span>
+            </label>
+
+            <select
+              id="semester"
+              value={semester}
+              onChange={(e) => setSemester(e.target.value)}
+            >
+              <option value="">Select a semester</option>
+
+              {semesters.map((item) => (
+                <option key={item} value={item}>
+                  Semester {item}
+                </option>
+              ))}
+            </select>
+          </div>
+
           {/* Description */}
 
           <div className="form-group">
@@ -127,17 +191,20 @@ function Upload() {
               <h3>Select your notes file</h3>
 
               <p>
-                PDF, DOC, DOCX or PPT files
+                 PDF files only
               </p>
 
-              <label htmlFor="file-input" className="choose-file-btn">
+              <label
+                htmlFor="file-input"
+                className="choose-file-btn"
+              >
                 Choose File
               </label>
 
               <input
                 id="file-input"
                 type="file"
-                accept=".pdf,.doc,.docx,.ppt,.pptx"
+                accept=".pdf"
                 onChange={(e) => setFile(e.target.files[0])}
               />
 
@@ -159,8 +226,12 @@ function Upload() {
               Cancel
             </Link>
 
-            <button type="submit" className="submit-upload-btn">
-              Upload Notes
+            <button
+              type="submit"
+              className="submit-upload-btn"
+              disabled={loading}
+            >
+              {loading ? "Uploading..." : "Upload Notes"}
             </button>
 
           </div>
@@ -174,3 +245,4 @@ function Upload() {
 }
 
 export default Upload;
+

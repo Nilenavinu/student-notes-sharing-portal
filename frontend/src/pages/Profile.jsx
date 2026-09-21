@@ -1,251 +1,273 @@
-import React, { useState } from "react";
+import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
+import API from "../api";
 import "../styles/profile.css";
 
 function Profile() {
-  const [isEditing, setIsEditing] = useState(false);
+  const [user, setUser] = useState(null);
+  const [notes, setNotes] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState("");
+  const [deletingId, setDeletingId] = useState(null);
 
-  const [profile, setProfile] = useState({
-    name: "Your Name",
-    email: "your@email.com",
-    department: "Computer Science and Engineering",
-    year: "3rd Year",
-    semester: "5th Semester",
-    bio: "Student and note sharing enthusiast.",
-  });
+  useEffect(() => {
+    let cancelled = false;
 
-  const handleChange = (e) => {
-    setProfile({
-      ...profile,
-      [e.target.name]: e.target.value,
-    });
+    const loadProfile = async () => {
+      try {
+        setLoading(true);
+        setError("");
+
+        const storedUser = JSON.parse(
+          localStorage.getItem("user")
+        );
+
+        const response = await API.get("/notes/my-notes");
+
+        if (!cancelled) {
+          setUser(storedUser);
+          setNotes(response.data);
+          setLoading(false);
+        }
+      } catch (error) {
+        console.error("Error loading profile:", error);
+
+        if (!cancelled) {
+          setError("Failed to load profile.");
+          setLoading(false);
+        }
+      }
+    };
+
+    loadProfile();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const handleDelete = async (noteId) => {
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this note?"
+    );
+
+    if (!confirmDelete) {
+      return;
+    }
+
+    try {
+      setDeletingId(noteId);
+
+      await API.delete(`/notes/${noteId}`);
+
+      setNotes((currentNotes) =>
+        currentNotes.filter((note) => note._id !== noteId)
+      );
+
+    } catch (error) {
+      console.error("Error deleting note:", error);
+
+      alert(
+        error.response?.data?.message ||
+          "Failed to delete note."
+      );
+    } finally {
+      setDeletingId(null);
+    }
   };
 
-  const handleSave = () => {
-    setIsEditing(false);
-    alert("Profile updated successfully!");
-  };
+  if (loading) {
+    return (
+      <div className="profile-page">
+        <div className="profile-loading">
+          <div>⏳</div>
+          <h3>Loading profile...</h3>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="profile-page">
+        <div className="profile-loading">
+          <div>⚠️</div>
+          <h3>{error}</h3>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="profile-page">
 
-      {/* Header */}
-
       <div className="profile-header">
         <div>
           <h1>My Profile</h1>
-          <p>View and manage your profile information.</p>
+          <p>View your profile and uploaded notes.</p>
         </div>
+
+        <Link to="/notes" className="back-btn">
+          ← Back to Notes
+        </Link>
       </div>
 
-      {/* Profile Card */}
+      <div className="profile-container">
 
-      <div className="profile-card">
-
-        {/* Profile Top */}
-
-        <div className="profile-top">
+        <div className="profile-card">
 
           <div className="profile-avatar">
-            {profile.name.charAt(0).toUpperCase()}
+            {user?.name
+              ? user.name.charAt(0).toUpperCase()
+              : "U"}
           </div>
 
-          <div className="profile-basic">
-            <h2>{profile.name}</h2>
-            <p>{profile.email}</p>
-            <span>{profile.department}</span>
+          <div className="profile-info">
+            <h2>{user?.name || "Student"}</h2>
+            <p>{user?.email || "No email available"}</p>
           </div>
 
-          {!isEditing && (
-            <button
-              className="edit-profile-btn"
-              onClick={() => setIsEditing(true)}
+        </div>
+
+        <div className="profile-stats">
+
+          <div className="stat-card">
+            <span>📚</span>
+
+            <div>
+              <h3>{notes.length}</h3>
+              <p>Notes Uploaded</p>
+            </div>
+          </div>
+
+        </div>
+
+        <div className="my-notes-section">
+
+          <div className="section-heading">
+
+            <div>
+              <h2>My Uploaded Notes</h2>
+              <p>
+                Notes you have shared with other students.
+              </p>
+            </div>
+
+            <Link
+              to="/upload"
+              className="upload-profile-btn"
             >
-              ✏️ Edit Profile
-            </button>
-          )}
-
-        </div>
-
-        {/* Divider */}
-
-        <div className="profile-divider"></div>
-
-        {/* Information */}
-
-        <div className="profile-information">
-
-          <h3>Personal Information</h3>
-
-          <div className="profile-grid">
-
-            {/* Name */}
-
-            <div className="profile-field">
-              <label>Full Name</label>
-
-              {isEditing ? (
-                <input
-                  type="text"
-                  name="name"
-                  value={profile.name}
-                  onChange={handleChange}
-                />
-              ) : (
-                <p>{profile.name}</p>
-              )}
-            </div>
-
-            {/* Email */}
-
-            <div className="profile-field">
-              <label>Email Address</label>
-
-              {isEditing ? (
-                <input
-                  type="email"
-                  name="email"
-                  value={profile.email}
-                  onChange={handleChange}
-                />
-              ) : (
-                <p>{profile.email}</p>
-              )}
-            </div>
-
-            {/* Department */}
-
-            <div className="profile-field">
-              <label>Department</label>
-
-              {isEditing ? (
-                <input
-                  type="text"
-                  name="department"
-                  value={profile.department}
-                  onChange={handleChange}
-                />
-              ) : (
-                <p>{profile.department}</p>
-              )}
-            </div>
-
-            {/* Year */}
-
-            <div className="profile-field">
-              <label>Year</label>
-
-              {isEditing ? (
-                <select
-                  name="year"
-                  value={profile.year}
-                  onChange={handleChange}
-                >
-                  <option>1st Year</option>
-                  <option>2nd Year</option>
-                  <option>3rd Year</option>
-                  <option>4th Year</option>
-                </select>
-              ) : (
-                <p>{profile.year}</p>
-              )}
-            </div>
-
-            {/* Semester */}
-
-            <div className="profile-field">
-              <label>Semester</label>
-
-              {isEditing ? (
-                <select
-                  name="semester"
-                  value={profile.semester}
-                  onChange={handleChange}
-                >
-                  <option>1st Semester</option>
-                  <option>2nd Semester</option>
-                  <option>3rd Semester</option>
-                  <option>4th Semester</option>
-                  <option>5th Semester</option>
-                  <option>6th Semester</option>
-                  <option>7th Semester</option>
-                  <option>8th Semester</option>
-                </select>
-              ) : (
-                <p>{profile.semester}</p>
-              )}
-            </div>
+              + Upload Notes
+            </Link>
 
           </div>
 
-          {/* Bio */}
+          {notes.length > 0 ? (
+            <div className="profile-notes-grid">
 
-          <div className="profile-field bio-field">
-            <label>Bio</label>
+              {notes.map((note) => (
+                <div
+                  className="profile-note-card"
+                  key={note._id}
+                >
 
-            {isEditing ? (
-              <textarea
-                name="bio"
-                rows="4"
-                value={profile.bio}
-                onChange={handleChange}
-              ></textarea>
-            ) : (
-              <p>{profile.bio}</p>
-            )}
-          </div>
+                  <div className="profile-note-top">
 
-          {/* Save Buttons */}
+                    <div className="profile-file-icon">
+                      📄
+                    </div>
 
-          {isEditing && (
-            <div className="profile-edit-actions">
+                    <span className="profile-subject-tag">
+                      {note.subject}
+                    </span>
 
-              <button
-                className="cancel-profile-btn"
-                onClick={() => setIsEditing(false)}
+                  </div>
+
+                  <h3>{note.title}</h3>
+
+                  <p>
+                    {note.description}
+                  </p>
+
+                  <div className="profile-note-details">
+
+                    <span>
+                      📚 Semester {note.semester}
+                    </span>
+
+                    <span>
+                      🕒{" "}
+                      {note.createdAt
+                        ? new Date(
+                            note.createdAt
+                          ).toLocaleDateString()
+                        : "Unknown date"}
+                    </span>
+
+                  </div>
+
+                  <div className="profile-note-actions">
+
+                    <a
+                      href={`http://localhost:5000${note.fileUrl}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="view-note-btn"
+                    >
+                      View
+                    </a>
+
+                    <a
+                      href={`http://localhost:5000${note.fileUrl}`}
+                      download
+                      className="download-note-btn"
+                    >
+                      Download
+                    </a>
+
+                    <button
+                      type="button"
+                      className="delete-note-btn"
+                      onClick={() =>
+                        handleDelete(note._id)
+                      }
+                      disabled={deletingId === note._id}
+                    >
+                      {deletingId === note._id
+                        ? "Deleting..."
+                        : "Delete"}
+                    </button>
+
+                  </div>
+
+                </div>
+              ))}
+
+            </div>
+          ) : (
+            <div className="no-profile-notes">
+
+              <div>📭</div>
+
+              <h3>
+                You haven't uploaded any notes yet
+              </h3>
+
+              <p>
+                Share your study materials with other
+                students.
+              </p>
+
+              <Link
+                to="/upload"
+                className="upload-profile-btn"
               >
-                Cancel
-              </button>
-
-              <button
-                className="save-profile-btn"
-                onClick={handleSave}
-              >
-                Save Changes
-              </button>
+                Upload Your First Note
+              </Link>
 
             </div>
           )}
 
-        </div>
-
-      </div>
-
-      {/* Statistics */}
-
-      <div className="profile-stats">
-
-        <div className="stat-card">
-          <span className="stat-icon">📚</span>
-          <div>
-            <h3>3</h3>
-            <p>Notes Uploaded</p>
-          </div>
-        </div>
-
-        <div className="stat-card">
-          <span className="stat-icon">⬇️</span>
-          <div>
-            <h3>0</h3>
-            <p>Downloads</p>
-          </div>
-        </div>
-
-        <div className="stat-card">
-          <span className="stat-icon">📅</span>
-          <div>
-            <h3>2026</h3>
-            <p>Joined</p>
-          </div>
         </div>
 
       </div>
@@ -255,4 +277,3 @@ function Profile() {
 }
 
 export default Profile;
-

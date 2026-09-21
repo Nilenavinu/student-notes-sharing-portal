@@ -6,7 +6,9 @@ const upload = require("../middleware/uploadMiddleware");
 
 const {
     uploadNote,
-    getAllNotes
+    getAllNotes,
+    getMyNotes,
+    deleteNote
 } = require("../controllers/noteController");
 
 // Upload Note
@@ -19,5 +21,16 @@ router.post(
 
 // Get All Notes
 router.get("/", getAllNotes);
-
+// Get My Uploaded Notes
+router.get(
+    "/my-notes",
+    protect,
+    getMyNotes
+);
+// Delete Note
+router.delete(
+    "/:id",
+    protect,
+    deleteNote
+);
 module.exports = router;
